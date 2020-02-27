@@ -17,7 +17,6 @@ import numpy.random as rnd
 import os
 import cv2
 import pickle
-import InterpolateFunction as IF
 
 base_path = os.path.join(sys.path[0], 'output/')
   
@@ -25,6 +24,25 @@ modelFile = ['model_40_100_80_0.95.sav', 'model_60_40_100_0.94.sav', 'model_60_8
              'model_20_100_100_0.94.sav', 'model_80_20_80_0.94.sav', 'model_20_60_60_0.94.sav', 
              'model_20_80_80_0.95.sav', 'model_40_100_60_0.94.sav']
 model = pickle.load(open(os.path.join(sys.path[0], 'ANNmodel/'+modelFile[0]), 'rb'))
+
+def denormVar(normalisedVar, varMin, varMax):
+    denormalisedVar = (normalisedVar*(varMax - varMin)) + varMin
+    return denormalisedVar
+
+def readFile(filePath):
+    caseList = []
+    with open(filePath) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter = ',')
+        for case in readCSV:
+            caseList.append(case)
+    caseArray = np.asarray(caseList)
+    Sigma, LambdaVar, Eta, Thickness, Spacing = caseArray[1:].T
+    Sigma = np.asarray(map(float, Sigma))
+    LambdaVar = np.asarray(map(float, LambdaVar))
+    Eta = np.asarray(map(float, Eta))
+    Thickness = np.asarray(map(float, Thickness))
+    Spacing = np.asarray(map(float, Spacing))
+    return Sigma, LambdaVar, Eta, Thickness, Spacing
 
 def get_noise(yDim, xDim, white_noise_func_val):
     if white_noise_func_val == "Uniform":
@@ -53,7 +71,7 @@ def trabModel(env_func_val, m_val, white_noise_func_val, seed_noise_val, q0_val,
     dim = 512
     yDim, xDim = dim, dim
     
-    Sigma, LambdaVar, Eta, Thickness, Spacing = IF.readFile(os.path.join(sys.path[0], 'data/trabData.csv'))
+    Sigma, LambdaVar, Eta, Thickness, Spacing = readFile(os.path.join(sys.path[0], 'data/trabData.csv'))
     
     thMin, thMax = np.min(Thickness), np.max(Thickness)
     print(thMin, thMax)
@@ -67,9 +85,9 @@ def trabModel(env_func_val, m_val, white_noise_func_val, seed_noise_val, q0_val,
     sigmaPred, lambdaPred, etaPred = predVals[0][0], predVals[0][1], predVals[0][2]
     print(sigmaPred, lambdaPred, etaPred)
     
-    sigma_val = IF.denormVar(sigmaPred, np.min(Sigma), np.max(Sigma))
-    lamb_val = IF.denormVar(lambdaPred, np.min(LambdaVar), np.max(LambdaVar))
-    eta_val = IF.denormVar(etaPred, np.min(Eta), np.max(Eta))
+    sigma_val = denormVar(sigmaPred, np.min(Sigma), np.max(Sigma))
+    lamb_val = denormVar(lambdaPred, np.min(LambdaVar), np.max(LambdaVar))
+    eta_val = denormVar(etaPred, np.min(Eta), np.max(Eta))
 #     print('sigmaClick, lambdaClick, etaClick',sigma_val, lamb_val, eta_val)
     
     paramsName.append(env_func_val)
@@ -239,7 +257,7 @@ if __name__ == "__main__":
     r0.set(0)
             
     """ Image canvas grid """
-    Sigma, LambdaVar, Eta, Thickness, Spacing = IF.readFile(os.path.join(sys.path[0], 'data/trabData.csv'))
+    Sigma, LambdaVar, Eta, Thickness, Spacing = readFile(os.path.join(sys.path[0], 'data/trabData.csv'))
         
     fig = Figure(figsize=(4, 2))
     ax = fig.add_subplot(111)
