@@ -1,0 +1,9 @@
+Super Gaussian 0.00
+m power 1.00
+Uniform 0.00
+Dim 512.00
+Sigma 60.89
+lambda_val 0.13
+q0 0.00
+r0 0.00
+Eta 2.07
