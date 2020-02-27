@@ -1,6 +1,10 @@
 ## Introduction
 TrabSim is a Python GUI for the generation of syntethic trabecular bone structures with desired thickness and spacing.
 
+## Output image
+![Trabecular example](/output/trab_20-02-28_09-16-47.tif)
+
+
 ## Prerequisites
 
 * [tifffile](https://pypi.org/project/tifffile/)
