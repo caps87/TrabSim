@@ -74,21 +74,17 @@ def trabModel(env_func_val, m_val, white_noise_func_val, seed_noise_val, q0_val,
     Sigma, LambdaVar, Eta, Thickness, Spacing = readFile(os.path.join(sys.path[0], 'data/trabData.csv'))
     
     thMin, thMax = np.min(Thickness), np.max(Thickness)
-    print(thMin, thMax)
     xClickNorm = (xClick - thMin) / (thMax - thMin)
     spMin, spMax = np.min(Spacing), np.max(Spacing)
     yClickNorm = (yClick - spMin) / (spMax - spMin)
-    print(xClick, yClick, xClickNorm, yClickNorm)
     
     predInput = np.array([xClickNorm, yClickNorm]).reshape(-1,1).T
     predVals = model.predict(predInput)
     sigmaPred, lambdaPred, etaPred = predVals[0][0], predVals[0][1], predVals[0][2]
-    print(sigmaPred, lambdaPred, etaPred)
     
     sigma_val = denormVar(sigmaPred, np.min(Sigma), np.max(Sigma))
     lamb_val = denormVar(lambdaPred, np.min(LambdaVar), np.max(LambdaVar))
     eta_val = denormVar(etaPred, np.min(Eta), np.max(Eta))
-#     print('sigmaClick, lambdaClick, etaClick',sigma_val, lamb_val, eta_val)
     
     paramsName.append(env_func_val)
     paramsVal.append(0)
