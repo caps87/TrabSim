@@ -257,7 +257,7 @@ if __name__ == "__main__":
         
     fig = Figure(figsize=(4, 2))
     ax = fig.add_subplot(111)
-    ax.plot(Thickness, Spacing, 'k.')
+    ax.plot(Thickness[::5], Spacing[::5], 'k.')
     ax.set_ylabel('Tb.Sp')
     ax.set_xlabel('Tb.Th')
     ax.set_xlim([0, 20])
